@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="js/jquery-2.1.3.min.js"></script>
+  <link rel="stylesheet" href="css/sample.css">
+  <title>とらちゃんをさがせ</title>
+  <style>
+    #train {
+      position: relative;
+      cursor: pointer;
+    }
+
+    ul {
+      display: flex;
+      justify-content: center;
+    }
+
+    li {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>とらちゃんをさがせ</h1>
+
+    <img src="https://frame-illust.com/fi/wp-content/uploads/2017/03/9563-480x480.png" width=100 height=100
+      alt="とらちゃん画像">
+    <div>とらちゃんがいる場所は？</div>
+    <div>もり・うみ・まちから探してね</div>
+    <div id="judgment"></div>
+  </header>
+  <main id="mondai">
+    <ul>
+      <li><img id="mori"
+          src="https://4.bp.blogspot.com/-4FT-kB5z6AI/VpjBpDioYRI/AAAAAAAA25c/_v1gjUlwpIo/s600/bg_natural_mori.jpg"
+          width=100% height=100></li>
+      <li><img id="umibe"
+          src="https://1.bp.blogspot.com/-HRbVXj1A8YQ/VpjBp0jXYxI/AAAAAAAA250/IBWfam8ZRss/s600/bg_natural_umi.jpg"
+          width=100% height=100></li>
+      <li><img id="machi"
+          src="https://4.bp.blogspot.com/-brXJnkqlxvA/VpjBqTDxONI/AAAAAAAA26E/GGaCfd1DWFE/s600/bg_outside_buildings.jpg"
+          width=100% height=100></li>
+    </ul>
+    <!--     <ul>
+      <li id="mori_btn">森</li>
+      <li id="umibe_btn">海辺</li>
+      <li id="machi_btn">街</li>
+    </ul> -->
+    <img id="train" src="http://putiya.com/img/food/niku01/niku01_a_02.png">
+
+  </main>
+
+
+  <main id="hakken" style="display: none;">
+    <img src="https://frame-illust.com/fi/wp-content/uploads/2017/03/9563-480x480.png" width=100 height=100
+      alt="とらちゃん画像">
+  </main>
+
+  <main id="maigo" style="display: none;">
+    <img src="https://frame-illust.com/fi/wp-content/uploads/2018/03/tora-shirokuro-400x400.png" width=100 height=100
+      alt="maigo">
+  </main>
+
+  <main id="sippai" style="display: none;">
+    <img src="https://ha-chi.biz/upim/p948.png" width=100 height=100 alt="sippai">
+
+  </main>
+
+  <footer></footer>
+  <script>
+    let wincount = 0;
+    // 時間制限のソース start
+    let start = Date.now(); // 開始時間を覚える
+
+    let timer = setInterval(function () {
+      // 開始からの経過時間は？
+      let timePassed = Date.now() - start;
+
+      if (timePassed >= 20000) {
+        clearInterval(timer); // 20秒後にアニメーションが終了
+        $('#mondai').hide();
+        $('#sippai').show();
+        console.log("stop!!!")
+        $('#judgment').html('失敗！とらちゃんは見つからなかったよ・・・');
+        return;
+      } else {
+        if (wincount >= 5)
+          return;
+      }
+
+      // timePassed 時点のアニメーションを描画
+      draw(timePassed);
+
+    }, 20);
+
+    // timePassed は 0 から 20000 まで進む
+    // なので、left は 0px から 400px になります
+    function draw(timePassed) {
+      train.style.left = timePassed / 15 + 'px';
+
+    }
+
+    // 時間制限のソース end
+    // ボタン制御のソース start
+    let buttonGoo = document.getElementById('mori');
+    buttonGoo.addEventListener('click', butotnClickGoo);
+    function butotnClickGoo() {
+      console.log('mori')
+      winner(0);
+    }
+
+    let buttonChoki = document.getElementById('umibe');
+    buttonChoki.addEventListener('click', butotnClickChoki);
+    function butotnClickChoki() {
+      console.log('umibe')
+      winner(1);
+    }
+
+    let buttonPar = document.getElementById('machi');
+    buttonPar.addEventListener('click', butotnClickPar);
+    function butotnClickPar() {
+      console.log('machi')
+      winner(2);
+    }
+    // ボタン制御のソース end
+    // ボタンを押したあとのじゃんけん制御のソース start
+    function winner(janken) {
+      console.log(janken)
+      var random = Math.floor(Math.random() * 3);
+      console.log(random)
+
+      $('#maigo').hide();
+
+      if (janken === 0) {
+        if (random === 0) {
+          console.log('もう１回')
+          $('#judgment').html('もう１回');
+        } else if (random === 1) {
+          console.log('発見！！')
+          $('#judgment').html('発見！！');
+          wincount += 1;
+        } else {
+          console.log('迷子')
+          $('#judgment').html('迷子')
+          $('#maigo').show();
+        }
+
+      } else if (janken === 1) {
+        if (random === 0) {
+          console.log('迷子')
+          $('#judgment').html('迷子');
+        } else if (random === 1) {
+          console.log('もう１回')
+          $('#judgment').html('もう１回');
+        } else {
+          console.log('発見！！')
+          $('#judgment').html('発見！！');
+          wincount += 1;
+        }
+
+      } if (janken === 2) {
+        if (random === 0) {
+          console.log('発見！！')
+          $('#judgment').html('発見！！');
+          wincount += 1;
+        } else if (random === 1) {
+          console.log('迷子')
+          $('#judgment').html('迷子');
+        } else {
+          console.log('もう１回')
+          $('#judgment').html('もう１回');
+        }
+      }
+
+      if (wincount >= 5) {
+        $('#mondai').hide();
+        $('#hakken').show();
+        $('#judgment').html('成功！とらちゃんが見つかったよ！');
+      }
+
+
+
+      //   if (random === 0) {
+      //     $('#pc_hands').html('森');
+      //   } else if (random === 1) {
+      //     $('#pc_hands').html('海辺');
+      //   } else {
+      //     $('#pc_hands').html('街');
+      //   }
+    }
+    // ボタンを押したあとのじゃんけん制御のソース end
+
+  </script>
+</body>
+
+</html>
