@@ -26,7 +26,19 @@
 
 <body>
 
-  <header>
+  <header id="top">
+    <h1>とらちゃんをさがせ</h1>
+
+    <img src="https://frame-illust.com/fi/wp-content/uploads/2017/03/9563-480x480.png" width=100 height=100
+      alt="とらちゃん画像">
+    <div>
+      <label for="name1">名前</label>
+      <input type="text" name="namae" id="name1">
+      <input type="button" id="startButton" value="はじめる">
+    </div>
+  </header>
+
+  <header id="startMondai" style="display: none;">
     <h1>とらちゃんをさがせ</h1>
 
     <img src="https://frame-illust.com/fi/wp-content/uploads/2017/03/9563-480x480.png" width=100 height=100
@@ -35,7 +47,7 @@
     <div>もり・うみ・まちから探してね</div>
     <div id="judgment"></div>
   </header>
-  <main id="mondai">
+  <main id="mondai" style="display: none;">
     <ul>
       <li><img id="mori"
           src="https://4.bp.blogspot.com/-4FT-kB5z6AI/VpjBpDioYRI/AAAAAAAA25c/_v1gjUlwpIo/s600/bg_natural_mori.jpg"
@@ -74,30 +86,38 @@
 
   <footer></footer>
   <script>
+    
     let wincount = 0;
-    // 時間制限のソース start
-    let start = Date.now(); // 開始時間を覚える
 
-    let timer = setInterval(function () {
-      // 開始からの経過時間は？
-      let timePassed = Date.now() - start;
+    const name = localStorage.getItem("name");
+    $("#name1").val(name)
+    
+    function timeStart() {
 
-      if (timePassed >= 20000) {
-        clearInterval(timer); // 20秒後にアニメーションが終了
-        $('#mondai').hide();
-        $('#sippai').show();
-        console.log("stop!!!")
-        $('#judgment').html('失敗！とらちゃんは見つからなかったよ・・・');
-        return;
-      } else {
-        if (wincount >= 5)
+      // 時間制限のソース start
+      let start = Date.now(); // 開始時間を覚える
+
+      let timer = setInterval(function () {
+        // 開始からの経過時間は？
+        let timePassed = Date.now() - start;
+
+        if (timePassed >= 20000) {
+          clearInterval(timer); // 20秒後にアニメーションが終了
+          $('#mondai').hide();
+          $('#sippai').show();
+          console.log("stop!!!")
+          $('#judgment').html('失敗！とらちゃんは見つからなかったよ・・・');
           return;
-      }
+        } else {
+          if (wincount >= 5)
+            return;
+        }
 
-      // timePassed 時点のアニメーションを描画
-      draw(timePassed);
+        // timePassed 時点のアニメーションを描画
+        draw(timePassed);
 
-    }, 20);
+      }, 20);
+    }
 
     // timePassed は 0 から 20000 まで進む
     // なので、left は 0px から 400px になります
@@ -107,6 +127,18 @@
     }
 
     // 時間制限のソース end
+    let startButton1 = document.getElementById('startButton');
+    startButton1.addEventListener('click', startMondai);
+    function startMondai() {
+      $('#top').hide();
+      $('#startMondai').show();
+      $('#mondai').show();
+      timeStart();
+    let target = $('#name1').val();
+    localStorage.setItem('name',target);
+      
+    }
+
     // ボタン制御のソース start
     let buttonGoo = document.getElementById('mori');
     buttonGoo.addEventListener('click', butotnClickGoo);
@@ -183,6 +215,8 @@
         $('#hakken').show();
         $('#judgment').html('成功！とらちゃんが見つかったよ！');
       }
+      
+      // localStorage.removeItem("fruit");
 
 
 
